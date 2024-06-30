@@ -2,8 +2,10 @@
 import csv
 import json
 import re
+from collections import defaultdict
 from datetime import datetime
 from decimal import Decimal, ROUND_HALF_EVEN
+from pprint import pprint
 
 # Шифр:
 # - дата: "jbdDDMMYY"
@@ -81,3 +83,33 @@ with open('decrypted_messages.csv', mode='w', newline='', encoding='utf8') as ou
     writer = csv.DictWriter(out_file, fieldnames=['date', 'city', 'expenses'])
     writer.writeheader()
     writer.writerows(formatted_result)
+
+
+# =====================================================================================================================
+
+
+aggregated_result = defaultdict(lambda: {'date': '', 'cities': set(), 'expenses_sum': Decimal(0), 'date_for_sort': ''})
+
+for res in sorted_result:
+    month_datetime = datetime(year=res['date'].year, month=res['date'].month, day=1)
+    month = month_datetime.strftime('%m.%Y')
+    aggregated_result[month]['date'] = month
+    aggregated_result[month]['cities'].add(res['city'])
+    aggregated_result[month]['expenses_sum'] += res['expenses']
+    aggregated_result[month]['date_for_sort'] = month_datetime
+
+sorted_aggregated_result = sorted(aggregated_result.values(), key=lambda x: x['date_for_sort'])
+
+formatted_aggregated_result = [
+    {
+        'date': res['date'],
+        'cities': ', '.join(res['cities']),
+        'expenses_sum': str(res['expenses_sum'].quantize(Decimal('1.00'), ROUND_HALF_EVEN))
+    }
+    for res in sorted_aggregated_result
+]
+
+with open('decrypted_messages_aggregated.csv', mode='w', newline='', encoding='utf8') as out_file_aggregated:
+    writer_aggregated = csv.DictWriter(out_file_aggregated, fieldnames=['date', 'cities', 'expenses_sum'])
+    writer_aggregated.writeheader()
+    writer_aggregated.writerows(formatted_aggregated_result)
