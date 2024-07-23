@@ -36,7 +36,7 @@ exchange_rates = {
 
 def str_date_to_datetime(str_date):
     """
-    Перевод из строчной даты в класс datetime в формате "DDMMYY"
+    Перевод из строчной даты в класс datetime в формате "DDMMYY".
 
     :param str_date: строчная дата в формате "DDMMYY"
     :return: дата datetime в формате "DDMMYY"
@@ -46,7 +46,7 @@ def str_date_to_datetime(str_date):
 
 def str_money_to_decimal(str_money, city):
     """
-    Перевод из строчной суммы потраченных денег в класс Decimal с учетом курса валюты страны
+    Перевод из строчной суммы потраченных денег в класс Decimal с учетом курса валюты страны.
 
     :param str_money: строчная сумма потраченных денег
     :param city: город, в валюту которого нужно перевести сумму
